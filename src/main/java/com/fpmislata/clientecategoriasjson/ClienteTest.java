@@ -24,13 +24,12 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-
 public class ClienteTest {
 
     public static void main(String[] args) throws IOException {
-         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         // ***********************
-        // *** LISTAR CATEGORIA
+        // *** LISTAR EMPLEADOS
         // ***********************     
         System.out.println("Lista de Empleados del sistema");
         System.out.println("---------------------------");
@@ -39,18 +38,17 @@ public class ClienteTest {
             System.out.println(gson.toJson(empleado, Empleado.class));
         }
         System.out.println("----------------------------\n");
-    
-//
-//        // **********************************************
-//        // *** RECUPERAMOS UNA CATEGORIA EN CONCRETO
-//        // **********************************************
-//        System.out.println("Recuperando una categoria en concrero del sistema");
-//        Categoria p = getCategoria("http://localhost:8080/ProyectoFinal20162017-web/webservice/CategoriasService/Categorias/findCategoriaById/3");
-//        System.out.println("La categoria recuperada es: " + p.toString());
-//        System.out.println("----------------------------\n");
-//
+
         // **********************************************
-        // *** AÑADIMOS UNA CATEGORIA AL SISTEMA
+        // *** RECUPERAMOS UN EMPLEADO EN CONCRETO
+        // **********************************************
+        System.out.println("Recuperando un empleado en concrero del sistema");
+        Empleado p = getEmpleado("http://localhost:8080/RSginerRelacionesJPA-web/api/empleados/1");
+        System.out.println("El empleado es: " + p.toString());
+        System.out.println("----------------------------\n");
+
+        // **********************************************
+        // *** AÑADIMOS UN EMPLEADO AL SISTEMA
         // **********************************************        
         Empleado nuevoEmpleado = new Empleado();
         Departamento departamento = new Departamento();
@@ -65,34 +63,28 @@ public class ClienteTest {
         Empleado e2 = addEmpleado("http://localhost:8080/RSginerRelacionesJPA-web/api/empleados/", nuevoEmpleado);
         System.out.println("El empleado insertado es: " + e2.getNombre());
         System.out.println("----------------------------\n");
-    
-    
+
+        // **********************************************
+        // *** ACTUALIZAMOS UN EMPLEADO EN EL SISTEMA
+        // **********************************************        
+        Empleado empleadoExistente = new Empleado();
+        empleadoExistente.setNombre("empleado existente2");
+        System.out.println("Modificando un empleado en el sistema");
+        Empleado p3 = updateEmpleado("http://localhost:8080/RSginerRelacionesJPA-web/api/empleados/3", empleadoExistente);
+        System.out.println("El empleado modificado es ahora: " + p3.toString());
+        System.out.println("----------------------------\n");
+
+        // **********************************************
+        // *** BORRAMOS UN EMPLEADO EN EL SISTEMA
+        // **********************************************         
+        System.out.println("Recuperando una categoria en concrero del sistema");
+        deleteCategoria("http://localhost:8080/RSginerRelacionesJPA-web/api/empleados/3");
+        System.out.println("La ha sido borrado el empleado 3");
+        System.out.println("----------------------------\n");
     }
-//        
-//        // **********************************************
-//        // *** ACTUALIZAMOS UNA CATEGORIA EN EL SISTEMA
-//        // **********************************************        
-//        Categoria categoriaExistente = new Categoria();
-//        categoriaExistente.setNombre("categoria existente2");
-//        categoriaExistente.setId(8);
-//        
-//        System.out.println("Modificando una categoria en el sistema");
-//        Categoria p3 = updateCategoria("http://localhost:8080/ProyectoFinal20162017-web/webservice/CategoriasService/Categorias/update/6", categoriaExistente);
-//        System.out.println("La categoria modificada es ahora: " + p3.toString());
-//        System.out.println("----------------------------\n");        
-//
-//        
-//        // **********************************************
-//        // *** BORRAMOS UNA CATEGORIA AL SISTEMA
-//        // **********************************************         
-//        System.out.println("Recuperando una categoria en concrero del sistema");
-//        deleteCategoria("http://localhost:8080/ProyectoFinal20162017-web/webservice/CategoriasService/Categorias/delete/4");
-//        System.out.println("La categoria recuperada es: " + p.toString());
-//        System.out.println("----------------------------\n");   
-//    }
-//    
-    // Obtenemos la lista de categorias
-    private static List<Empleado> getListEmpleados(String url) throws IOException {
+
+// Obtenemos la lista de categorias
+private static List<Empleado> getListEmpleados(String url) throws IOException {
         // Crea el cliente para realizar la conexion
         DefaultHttpClient httpClient = new DefaultHttpClient();
         // Crea el método con el que va a realizar la operacion
@@ -114,23 +106,26 @@ public class ClienteTest {
     }
 
 //    // Obtenemos una categoria en concreto
-//    private static Categoria getCategoria(String url) throws IOException {
-//        // Crea el cliente para realizar la conexion
-//        DefaultHttpClient httpClient = new DefaultHttpClient();
-//        // Crea el método con el que va a realizar la operacion
-//        HttpGet httpGet = new HttpGet(url);
-//        // Añade las cabeceras al metodo
-//        httpGet.addHeader("accept", "application/json; charset=UTF-8");
-//        httpGet.addHeader("Content-type", "application/json; charset=UTF-8");
-//        // Invocamos el servicio rest y obtenemos la respuesta
-//        HttpResponse response = httpClient.execute(httpGet);
-//        // Obtenemos un objeto String como respuesta del response
-//        String categoriaString = readObject(response);
-//        // Creamos el objeto Gson que parseará los objetos a JSON, excluyendo los que no tienen la anotacion @Expose
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        // Parseamos el String categoria a un objeto con el gson, devolviendo así un objeto Categoria
-//        return gson.fromJson(categoriaString, Categoria.class);
-//    }
+    private static Empleado getEmpleado(String url) throws IOException {
+        // Crea el cliente para realizar la conexion
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        // Crea el método con el que va a realizar la operacion
+        HttpGet httpGet = new HttpGet(url);
+        // Añade las cabeceras al metodo
+        httpGet.addHeader("accept", "application/json; charset=UTF-8");
+        httpGet.addHeader("Content-type", "application/json; charset=UTF-8");
+        // Invocamos el servicio rest y obtenemos la respuesta
+        HttpResponse response = httpClient.execute(httpGet);
+        // Obtenemos un objeto String como respuesta del response
+        String categoriaString = readObject(response);
+        // Creamos el objeto Gson que parseará los objetos a JSON, excluyendo los que no tienen la anotacion @Expose
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        // Parseamos el String categoria a un objeto con el gson, devolviendo así un objeto Categoria
+        
+
+return gson.fromJson(categoriaString, Empleado.class
+);
+    }
 
     // Añadimos una categoria al sistema
     private static Empleado addEmpleado(String url, Empleado empleado) throws IOException {
@@ -161,68 +156,74 @@ public class ClienteTest {
         }
 
         String empleadoResult = readObject(response);
-        return gson.fromJson(empleadoResult, Empleado.class);
+        
+
+return gson.fromJson(empleadoResult, Empleado.class
+);
     }
 //    
 //    // Borramos una categoria al sistema
-//    private static void deleteCategoria(String url) {
-//        try {
-//            // Crea el cliente para realizar la conexion
-//            DefaultHttpClient httpClient = new DefaultHttpClient();
-//            // Crea el método con el que va a realizar la operacion
-//            HttpDelete delete = new HttpDelete(url);
-//            // Añade las cabeceras al metodo
-//            delete.addHeader("accept", "application/json; charset=UTF-8");
-//            delete.addHeader("Content-type", "application/json; charset=UTF-8");
-//            // Invocamos el servicio rest y obtenemos la respuesta
-//            HttpResponse response = httpClient.execute(delete);
-//            String status = response.getStatusLine().toString();
-//
-//            // Comprobamos si ha fallado
-//            if (response.getStatusLine().getStatusCode() != 200) {
-//                throw new RuntimeException("Failed : HTTP error code : "
-//                    + response.getStatusLine().getStatusCode());
-//            }else{
-//                System.out.println("Se ha eliminado la categoria correctamente.");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }    
+    private static void deleteCategoria(String url) {
+        try {
+            // Crea el cliente para realizar la conexion
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            // Crea el método con el que va a realizar la operacion
+            HttpDelete delete = new HttpDelete(url);
+            // Añade las cabeceras al metodo
+            delete.addHeader("accept", "application/json; charset=UTF-8");
+            delete.addHeader("Content-type", "application/json; charset=UTF-8");
+            // Invocamos el servicio rest y obtenemos la respuesta
+            HttpResponse response = httpClient.execute(delete);
+            String status = response.getStatusLine().toString();
+
+            // Comprobamos si ha fallado
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                    + response.getStatusLine().getStatusCode());
+            }else{
+                System.out.println("Se ha eliminado la categoria correctamente.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }    
 //    
-//    private static Categoria updateCategoria(String url, Categoria categoria) throws IOException {
-//        // Crea el cliente para realizar la conexion
-//        DefaultHttpClient httpClient = new DefaultHttpClient();
-//        // Crea el método con el que va a realizar la operacion
-//        HttpPut httpPut = new HttpPut(url);
-//        // Añade las cabeceras al metodo
-//        httpPut.addHeader("accept", "application/json; charset=UTF-8");
-//        httpPut.addHeader("Content-type", "application/json; charset=UTF-8");
-//        // Creamos el objeto Gson que parseará los objetos a JSON, excluyendo los que no tienen la anotacion @Expose
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        // Parseamos el objeto a String
-//        String jsonString = gson.toJson(categoria);
-//        // Construimos el objeto StringEntity indicando que su juego de caracteres es UTF-8
-//        StringEntity input = new StringEntity(jsonString, "UTF-8");
-//        // Indicamos que su tipo MIME es JSON
-//        input.setContentType("application/json");
-//        // Asignamos la entidad al metodo con el que trabajamos
-//        httpPut.setEntity(input);
-//        // Invocamos el servicio rest y obtenemos la respuesta
-//        HttpResponse response = httpClient.execute(httpPut);
-//
-//        // Comprobamos si ha fallado
-//        if (response.getStatusLine().getStatusCode() != 200) {
-//            throw new RuntimeException("Failed : HTTP error code : "
-//                    + response.getStatusLine().getStatusCode());
-//        }else{
-//            System.out.println("La actualización ha ido correcta.");
-//        }
-//
-//        // Devolvemos el resultado
-//        String categoriaResult = readObject(response);
-//        return gson.fromJson(categoriaResult, Categoria.class);
-//    }
+    private static Empleado updateEmpleado(String url, Empleado empleado) throws IOException {
+        // Crea el cliente para realizar la conexion
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        // Crea el método con el que va a realizar la operacion
+        HttpPut httpPut = new HttpPut(url);
+        // Añade las cabeceras al metodo
+        httpPut.addHeader("accept", "application/json; charset=UTF-8");
+        httpPut.addHeader("Content-type", "application/json; charset=UTF-8");
+        // Creamos el objeto Gson que parseará los objetos a JSON, excluyendo los que no tienen la anotacion @Expose
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        // Parseamos el objeto a String
+        String jsonString = gson.toJson(empleado);
+        // Construimos el objeto StringEntity indicando que su juego de caracteres es UTF-8
+        StringEntity input = new StringEntity(jsonString, "UTF-8");
+        // Indicamos que su tipo MIME es JSON
+        input.setContentType("application/json");
+        // Asignamos la entidad al metodo con el que trabajamos
+        httpPut.setEntity(input);
+        // Invocamos el servicio rest y obtenemos la respuesta
+        HttpResponse response = httpClient.execute(httpPut);
+
+        // Comprobamos si ha fallado
+        if (response.getStatusLine().getStatusCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : "
+                    + response.getStatusLine().getStatusCode());
+        }else{
+            System.out.println("La actualización ha ido correcta.");
+        }
+
+        // Devolvemos el resultado
+        String categoriaResult = readObject(response);
+        
+
+return gson.fromJson(categoriaResult, Empleado.class
+);
+    }
 
     // Método que nos sirve para la lectura de los JSON
     private static String readObject(HttpResponse httpResponse) throws IOException {
